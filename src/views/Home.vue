@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-content>
-      <v-card class="grey lighten-5" v-if="dashboard.length > 0">
+      <v-card v-if="dashboard.length > 0">
         <p
           class="mt-0 align text-center text-no-wrap headline"
           v-if="dashboard.length > 0"

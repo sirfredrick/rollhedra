@@ -23,8 +23,9 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar app color="indigo" dark hide-on-scroll>
+    <v-app-bar app class="deep-purple accent-2" dark hide-on-scroll>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-icon x-large>{{`$logo`}}</v-icon>
       <v-toolbar-title>Rollhedra</v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-slot:extension>
@@ -32,7 +33,7 @@
       </template>
     </v-app-bar>
     <router-view></router-view>
-    <v-footer color="indigo" app>
+    <v-footer class="deep-purple accent-2" app>
       <span class="white--text">
         &copy;
         <v-icon color="white">mdi-dice-d20</v-icon>

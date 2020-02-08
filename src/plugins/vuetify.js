@@ -13,12 +13,16 @@ import DiceC60B from '../components/icons/DiceC60B.vue'
 import DiceC60C from '../components/icons/DiceC60C.vue'
 import DiceC60D from '../components/icons/DiceC60D.vue'
 import DiceC120 from '../components/icons/DiceC120.vue'
+import Logo from '../components/icons/Logo.vue'
 
 Vue.use(Vuetify)
 
 export default new Vuetify({
     icons: {
         values: {
+            logo: {
+                component: Logo,
+            },
             c12a: {
                 component: DiceC12A,
             },
