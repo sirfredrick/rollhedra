@@ -305,7 +305,7 @@ export default {
   },
   mounted() {
     if (this.startAmount) {
-      this.disableRoll = !this.$refs.form.validate();
+      this.disableRoll = !this.$refs.amountForm.validate();
       this.amount = this.startAmount;
       if (this.startModifier) {
         this.modifier = this.startModifier;
