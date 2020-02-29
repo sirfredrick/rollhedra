@@ -4,7 +4,7 @@
       <span class="mt-5">
         <v-icon x-large>{{this.iconPath}}</v-icon>
       </span>
-      <v-form ref="form">
+      <v-form ref="amountForm">
         <v-text-field
           class="mt-5"
           style="min-width: 50px"
@@ -14,10 +14,11 @@
           v-model="amount"
           counter="6"
           maxlength="6"
-          :rules="[rules.numberRule]"
+          :rules="[rules.amountRule]"
           required
           @change="validate"
           @focus="validate"
+          @blur="validate"
           @input="validate"
         ></v-text-field>
       </v-form>
@@ -38,6 +39,7 @@
               required
               @change="validate"
               @focus="validate"
+              @blur="validate"
               @input="validate"
             ></v-text-field>
             <p>+</p>
@@ -60,13 +62,17 @@
               required
               @change="validate"
               @focus="validate"
+              @blur="validate"
               @input="validate"
             ></v-text-field>
             <p>+</p>
           </v-row>
         </v-form>
       </v-col>
-      <p class="mt-6 text-no-wrap headline" v-else>{{ this.code.charAt(0)}}{{ this.sides }}{{this.space}} +</p>
+      <p
+        class="mt-6 text-no-wrap headline"
+        v-else
+      >{{ this.code.charAt(0)}}{{ this.sides }}{{this.space}} +</p>
       <v-text-field
         class="mt-5"
         style="min-width: 50px"
@@ -79,6 +85,7 @@
         :rules="[rules.numberRule]"
         @change="validate"
         @focus="validate"
+        @blur="validate"
         @input="validate"
       ></v-text-field>
       <p class="mt-6 headline">=</p>
@@ -90,6 +97,7 @@
         dense
         readonly
         @focus="validate"
+        @blur="validate"
         v-model="result"
       ></v-text-field>
 
@@ -126,7 +134,7 @@
       </v-col>
     </v-row>
     <v-row>
-        <p class="error--text">{{this.message}}</p>
+      <p class="error--text">{{this.message}}</p>
     </v-row>
   </v-container>
 </template>
@@ -146,44 +154,68 @@ export default {
     return {
       rules: {
         numberRule: v => {
-            if (!isNaN(parseFloat(v)) && v >= 0 && v.length <= 6) return true;
-            return "";
+          if (v.length == 0 || (!isNaN(parseFloat(v)) && v.length <= 6))
+            return true;
+          return "";
+        },
+        amountRule: v => {
+          if (!isNaN(parseFloat(v)) && v >= 0 && v.length <= 6) return true;
+          return "";
         },
         bipyramid: v => {
-            if (!isNaN(parseFloat(v)) && v > 8 && v % 4 == 0) return true;
-            return "!";
+          if (!isNaN(parseFloat(v)) && v > 8 && v % 4 == 0) return true;
+          return "!";
         },
         trapezohedra: v => {
-            if (!isNaN(parseFloat(v)) && v > 6 && v % 4 != 0 && v % 2 == 0) return true;
-            return "!";
+          if (!isNaN(parseFloat(v)) && v > 6 && v % 4 != 0 && v % 2 == 0)
+            return true;
+          return "!";
         }
       },
       space: "",
       message: "",
-      amount: null,
-      modifier: null,
+      amount: "",
+      modifier: "",
       disableRoll: true,
-      result: null,
+      result: "",
       iconPath: "mdi-dice-d6"
     };
   },
   methods: {
     validate() {
-      if ((this.code.charAt(0) == "b" || this.code.charAt(0) == "t") && !this.id) {
-        this.disableRoll = !(
-          this.$refs.form.validate() && this.$refs.sideForm.validate()
-        );
-      } else {
-        this.disableRoll = !this.$refs.form.validate();
-      }
-      if (this.disableRoll) {
-          if (this.code.charAt(0) == "b") {
-                this.message = "Must be > 8 and / by 4.";
-          } else if (this.code.charAt(0) == "t") {
+      if (this.code.charAt(0) == "b" || this.code.charAt(0) == "t") {
+        if (this.sides.length != 0 || this.sides != "") {
+          const sideFormValid = this.$refs.sideForm.validate();
+          if (!sideFormValid) {
+            if (this.code.charAt(0) == "b") {
+              this.message = "Must be > 8 and / by 4.";
+            } else if (this.code.charAt(0) == "t") {
               this.message = "Must be > 6 and / by 2 but not by 4.";
+            }
+          } else {
+            this.message = "";
           }
-      } else {
+          if (this.amount.length != 0 || !this.amount) {
+            const amountFormValid = this.$refs.amountForm.validate();
+            this.disableRoll = !(amountFormValid && sideFormValid);
+          }
+        } else {
           this.message = "";
+          this.$refs.sideForm.resetValidation();
+        }
+      } else if (this.amount.length != 0 || this.amount != "") {
+        const amountFormValid = this.$refs.amountForm.validate();
+        if (this.modifier.length != 0 || this.modifier != "") {
+          const formValid = this.$refs.form.validate();
+          this.disableRoll = !(amountFormValid && formValid);
+        } else {
+          this.disableRoll = !amountFormValid;
+        }
+      } else {
+        this.$refs.amountForm.resetValidation();
+        if (this.modifier.length == 0 || this.modifier == "") {
+          this.$refs.form.resetValidation();
+        }
       }
     },
     roll() {
@@ -265,10 +297,10 @@ export default {
       else this.iconPath = `$c${this.sides}`;
     }
     if (this.code.charAt(0) == "d" && this.sides < 10) {
-        this.space = "\u2002";
+      this.space = "\u2002";
     }
     if (this.code.charAt(0) == "c" && this.sides < 100) {
-        this.space = "\u2007";
+      this.space = "\u2007";
     }
   },
   mounted() {
