@@ -1,6 +1,8 @@
 # Rollhedra
 >  A Mathematical based dice rolling app!
 
+**Notice:** This repository is now archived. Feel free to fork it if you want to continue work on it.
+
 Rollhedra takes a mathematical twist to the normal dice rolling web-app. It categorizes dice by their geometric properties. It includes subgroups of what are called ["Uniform Fair Dice"](https://en.wikipedia.org/wiki/Dice#Rarer_variations) meaning that mathematically each side should have an equal chance of being rolled. This is due to them being symmetrical or face-transitive.
 
 ## Features
